@@ -40,7 +40,7 @@ swift-docc-skills/
 │   │   └── PackageLandingPage.md          # Reference catalog landing page template
 │   └── tutorials/
 │       ├── TableOfContents.tutorial       # Curriculum TOC (@Tutorials) template
-│       ├── StepByStep.tutorial            # Guided tutorial (@Tutorial) template
+│       ├── StepByStep.tutorial            # Interactive tutorial (@Tutorial) template
 │       └── ConceptualArticle.article      # Conceptual guide (@Article) template
 └── tests/
     └── test_audit_docc_highlights.py      # Unit tests for the audit script
