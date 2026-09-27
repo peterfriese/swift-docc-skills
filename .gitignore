@@ -1,0 +1,44 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Swift & SPM
+.build/
+Packages/
+Package.resolved
+Package.pins
+.swiftpm/
+
+# Xcode
+DerivedData/
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+*.moved-aside
+*.xccheckout
+
+# DocC static output artifacts
+docs/
+.docc-build/
+*.doccarchive
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+.pytest_cache/
+
+# Editor artifacts
+.vscode/
+.idea/
+*.swp
+*~
