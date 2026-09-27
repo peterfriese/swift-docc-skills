@@ -4,6 +4,8 @@ license: Apache-2.0
 description: >-
   Authoritative guide for authoring Apple-grade Swift DocC API reference documentation,
   in-source doc comments, documentation catalogs, topic curation, and symbol graphs.
+  Use when writing triple-slash doc comments, designing landing pages, curating Topics sections,
+  linking symbols, or resolving DocC reference warnings.
 metadata:
   author: peterfriese
   version: "1.0.0"
@@ -160,7 +162,7 @@ and route optimization applications. Designed for Swift 6, all public types conf
 
 - ``SpatialIndex``
 - ``BoundingBox``
-- <doc:Articles/ConcurrencyModel>
+- <doc:ConcurrencyModel>
 
 ### Supporting Types
 
@@ -189,12 +191,19 @@ When multiple methods share the same base name, specify the argument labels:
 - ` ``Engine/start(withConfiguration:)`` `
 - ` ``Engine/start(retries:timeout:)`` `
 
-If two symbols differ only by type signature (e.g., property vs method, or identical argument labels with different parameter types), include the full path or symbol kind identifier if required by DocC:
-- ` ``Coordinate/init(latitude:longitude:)`` `
+When symbols share identical base names and argument labels, DocC provides disambiguation suffixes based on symbol kind, parameter types, return types, or collision hashes:
+
+| Disambiguation Type | Suffix Syntax | Example |
+| :--- | :--- | :--- |
+| **Symbol Kind** | `-<kind>` | ` ``Coordinate-struct`` `, ` ``Coordinate-enum`` ` |
+| **Parameter Types** | `-(<types>)` | ` ``distance(to:)-(Coordinate,_)`` ` |
+| **Return Type** | `-><type>` | ` ``distance(to:)->Double`` ` |
+| **Parameters & Return** | `-(<types>)-><type>` | ` ``process(_:)-(Data)->Bool`` ` |
+| **Unique Identifier Hash** | `-<hash>` | ` ``update(value:)-4gcpg`` ` |
 
 ### Article & Path Links
 
-- Link to articles: `<doc:GettingStarted>` or `<doc:Articles/ConcurrencyModel>`
+- Link to articles: `<doc:GettingStarted>` or `<doc:ConcurrencyModel>` (DocC resolves articles by filename without catalog subfolder prefixes)
 - Link to external URLs: standard Markdown `[Apple Developer](https://developer.apple.com)`
 
 ---
@@ -255,7 +264,7 @@ Refer to the geodesic accuracy table below when choosing between Haversine and V
 - ``bearing(to:)``
 ```
 
-The content in this extension file merges seamlessly with the in-source comments attached to `Coordinate`.
+The content in this extension file merges directly with the in-source comments attached to `Coordinate`.
 
 ---
 

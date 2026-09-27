@@ -7,7 +7,6 @@ Unit tests for scripts/audit-docc-highlights.py.
 
 import importlib.util
 import json
-import os
 import sys
 import tempfile
 import unittest
@@ -32,16 +31,19 @@ format_context_snippet = audit_mod.format_context_snippet
 class TestAuditDoccHighlights(unittest.TestCase):
     def test_strip_comment(self):
         self.assertEqual(strip_comment("  } // close struct"), "}")
+        self.assertEqual(strip_comment("  } /* inline comment */"), "}")
         self.assertEqual(strip_comment("let x = 10"), "let x = 10")
         self.assertEqual(strip_comment("    // comment only"), "")
 
     def test_is_closing_brace(self):
         self.assertTrue(is_closing_brace("}"))
         self.assertTrue(is_closing_brace("  } // comment"))
+        self.assertTrue(is_closing_brace("  } /* comment */"))
         self.assertTrue(is_closing_brace("})"))
         self.assertTrue(is_closing_brace("},"))
         self.assertTrue(is_closing_brace("});"))
         self.assertTrue(is_closing_brace(");"))
+        self.assertTrue(is_closing_brace("};"))
         self.assertFalse(is_closing_brace("func hello() {"))
         self.assertFalse(is_closing_brace("return 42"))
 
@@ -51,6 +53,8 @@ class TestAuditDoccHighlights(unittest.TestCase):
         self.assertEqual(find_contiguous_blocks([1, 2, 4, 5, 7]), [[1, 2], [4, 5], [7]])
         # Unsorted input handling
         self.assertEqual(find_contiguous_blocks([5, 1, 2, 4]), [[1, 2], [4, 5]])
+        # Duplicate line numbers handling
+        self.assertEqual(find_contiguous_blocks([1, 1, 2, 4, 4, 5]), [[1, 2], [4, 5]])
 
     def test_get_step_mapping(self):
         sample_doc = {
@@ -66,7 +70,14 @@ class TestAuditDoccHighlights(unittest.TestCase):
                                     "content": [
                                         {
                                             "inlineContent": [
-                                                {"text": "Create ContentView."}
+                                                {"text": "Create "},
+                                                {
+                                                    "type": "strong",
+                                                    "inlineContent": [
+                                                        {"text": "ContentView"}
+                                                    ]
+                                                },
+                                                {"text": "."}
                                             ]
                                         }
                                     ],
@@ -103,12 +114,46 @@ class TestAuditDoccHighlights(unittest.TestCase):
                     }
                 },
             }
-            (tmp_path / "tutorial.json").write_text(json.dumps(clean_tutorial), encoding="utf-8")
+            json_file = tmp_path / "tutorial.json"
+            json_file.write_text(json.dumps(clean_tutorial), encoding="utf-8")
 
+            # Test directory scan
             total_files, total_refs, total_blocks, shifted = audit_tutorial_highlights(tmp_path)
             self.assertEqual(total_files, 1)
             self.assertEqual(total_refs, 1)
             self.assertEqual(total_blocks, 1)
+            self.assertEqual(len(shifted), 0)
+
+            # Test single-file audit
+            total_files_f, total_refs_f, total_blocks_f, shifted_f = audit_tutorial_highlights(json_file)
+            self.assertEqual(total_files_f, 1)
+            self.assertEqual(total_refs_f, 1)
+            self.assertEqual(len(shifted_f), 0)
+
+    def test_audit_closing_brace_not_shifted(self):
+        """Verifies that a step legitimately adding a closing brace is not falsely flagged."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            legit_brace_tutorial = {
+                "sections": [],
+                "references": {
+                    "step3.swift": {
+                        "content": [
+                            "struct MyView: View {",
+                            "    var body: some View {",
+                            "        Text(\"Hello\")",
+                            "    }",
+                            "}",
+                        ],
+                        # User added the closing brace at line 5; line after (line 6) does not exist (not a brace)
+                        "highlights": [
+                            {"line": 5},
+                        ],
+                    }
+                },
+            }
+            (tmp_path / "tutorial.json").write_text(json.dumps(legit_brace_tutorial), encoding="utf-8")
+            total_files, total_refs, total_blocks, shifted = audit_tutorial_highlights(tmp_path)
             self.assertEqual(len(shifted), 0)
 
     def test_audit_shifted_brace_detected(self):

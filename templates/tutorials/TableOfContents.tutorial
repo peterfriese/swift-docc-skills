@@ -42,7 +42,9 @@
         }
 
         @SampleCode(destination: "https://github.com/example/sample-repo") {
-            Browse the open source companion sample code repository.
+            Browse the open source companion sample code repository:
+
+            - [Sample Code Repository](https://github.com/example/sample-repo)
         }
     }
 }

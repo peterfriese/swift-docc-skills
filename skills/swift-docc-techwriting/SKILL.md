@@ -4,6 +4,8 @@ license: Apache-2.0
 description: >-
   The Apple documentation style standard: down-to-earth pragmatic voice, anti-grandiose principle,
   3-Sentence Step Anatomy, prohibited vocabulary index, hero image standards, and visual safe margins.
+  Use when reviewing or writing technical documentation, checking step structure, auditing vocabulary,
+  or polishing tutorial prose to match Apple standards.
 metadata:
   author: peterfriese
   version: "1.0.0"
@@ -114,7 +116,7 @@ To preserve Apple's signature polish and avoid condescending or bloated language
 ```
 
 ### Why Diminutives Are Forbidden
-Words like *simply*, *just*, and *obviously* alienate readers. If an engineer is stuck or encountering a new paradigm, telling them to *"simply configure the delegate"* is patronizing and unhelpful.
+Words like *simply*, *just*, and *obviously* alienate readers. If an engineer is stuck or encountering an unfamiliar pattern, telling them to *"simply configure the delegate"* is patronizing and unhelpful.
 
 ### Prohibited Meta-Narration
 Never describe the act of writing the tutorial itself:

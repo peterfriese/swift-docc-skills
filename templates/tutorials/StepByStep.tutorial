@@ -20,7 +20,9 @@
             @Step {
                 In the Project navigator, create a new SwiftUI view file named `ItemHeaderView.swift`.
 
-                By default, SwiftUI view files declare a structure conforming to `View` and a preview provider.
+                By default, SwiftUI view files declare a structure conforming to `View` and a `#Preview` block.
+
+                The canvas renders an initial preview displaying a placeholder text view.
 
                 @Code(name: "ItemHeaderView.swift", file: "01-header-step1.swift")
             }
@@ -28,7 +30,9 @@
             @Step {
                 Replace the default text view with an `Image` view displaying the hero asset.
 
-                The canvas preview refreshes immediately to show the raw asset.
+                Image views display bitmap assets stored in your asset catalog using asset name identifiers.
+
+                The canvas preview refreshes immediately to render the unclipped hero image.
 
                 @Code(name: "ItemHeaderView.swift", file: "01-header-step2.swift")
             }
@@ -36,7 +40,9 @@
             @Step {
                 Apply the `clipShape(_:)` modifier to mask the image to a rounded rectangle.
 
-                Masking bounds the image to uniform rounded corners across all display form factors.
+                Clipping constrains the view's rendered bounds without modifying the underlying asset geometry.
+
+                The image corners smooth into uniform rounded edges in the preview.
 
                 @Code(name: "ItemHeaderView.swift", file: "01-header-step3.swift")
             }
@@ -44,7 +50,9 @@
             @Step {
                 Embed the image inside a `VStack` and append a title text view underneath.
 
-                An *VStack* stacks views along a vertical axis without requiring manual constraint calculations.
+                A `VStack` stacks views along a vertical axis without requiring manual constraint calculations.
+
+                The canvas updates to show the title centered directly beneath the header image.
 
                 @Code(name: "ItemHeaderView.swift", file: "01-header-step4.swift")
             }

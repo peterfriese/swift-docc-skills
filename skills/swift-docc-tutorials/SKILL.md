@@ -4,6 +4,8 @@ license: Apache-2.0
 description: >-
   Authoritative guide and syntax specification for authoring interactive DocC tutorials,
   multi-chapter curricula, step-by-step code walkthroughs, and knowledge assessments.
+  Use when authoring @Tutorials, @Tutorial, @Article pages, defining @Code steps, or
+  preventing Myers diff code highlight shifts.
 metadata:
   author: peterfriese
   version: "1.0.0"
@@ -99,6 +101,24 @@ DocC enforces strict parent-child relationships between directives. Violating th
             └── @Justification(reaction: "...")
 ```
 
+### The Conceptual Article Tree (`@Article`)
+
+```
+@Article(time: <minutes>)                       [Root directive for conceptual tutorial article]
+├── @Intro(title: "...")                        [Required: Hero introduction & overview banner]
+│   ├── @Image(source: "...", alt: "...")
+│   └── @Video(source: "...", poster: "...")
+├── @ContentAndMedia                            [1 or more conceptual overview blocks]
+│   └── @Image(source: "...", alt: "...")
+├── @Stack                                      [Optional horizontal multi-column container]
+│   ├── @ContentAndMedia                        [1 to 3 columns required inside @Stack]
+│   │   └── @Image(source: "...", alt: "...")
+│   └── @ContentAndMedia
+│       └── @Image(source: "...", alt: "...")
+└── @Assessments                                [Optional knowledge checks]
+    └── @MultipleChoice
+```
+
 ---
 
 ## 3. Directives Reference
@@ -137,7 +157,10 @@ Defines the landing page for your tutorial curriculum.
         }
 
         @Documentation(destination: "https://developer.apple.com/documentation/swiftui") {
-            Browse official Apple documentation for SwiftUI and SwiftData.
+            Browse official Apple documentation for SwiftUI and SwiftData:
+
+            - [SwiftUI Documentation](https://developer.apple.com/documentation/swiftui)
+            - [SwiftData Documentation](https://developer.apple.com/documentation/swiftdata)
         }
     }
 }
@@ -175,11 +198,15 @@ Defines an individual tutorial page with step-by-step instructions.
 
                 SwiftUI files declare a `View` structure and a `#Preview` block.
 
+                The canvas renders an initial preview displaying a placeholder text view.
+
                 @Code(name: "PhotoCard.swift", file: "01-card-step1.swift")
             }
 
             @Step {
                 Replace the default `Text` view with an `Image` view that loads the cover photo.
+
+                Image views display bitmap assets stored in your asset catalog using asset name identifiers.
 
                 The canvas preview updates immediately to render the unclipped photo.
 
@@ -188,6 +215,10 @@ Defines an individual tutorial page with step-by-step instructions.
 
             @Step {
                 Apply the `clipShape(_:)` modifier to give the image rounded corners.
+
+                Clipping constrains the view's rendered bounds without modifying the underlying asset geometry.
+
+                The image corners smooth into uniform rounded edges in the preview.
 
                 @Code(name: "PhotoCard.swift", file: "01-card-step3.swift")
             }
@@ -269,7 +300,7 @@ To prevent this defect:
 
 Every interactive tutorial must culminate in an `@Assessments` block:
 - Include 1–3 `@MultipleChoice` questions.
-- Every question must test a **conceptual rule, framework principle, or behavioral nuance**, never trivial syntax trivia.
+- Every question must test a **conceptual rule, framework principle, or behavioral nuance**, never superficial syntax details.
 - Exactly one `@Choice(isCorrect: true)` per question.
 - Every `@Choice` must include a `@Justification(reaction: "...")`:
   - For correct choices: `@Justification(reaction: "Correct!")` explaining *why* it is right.

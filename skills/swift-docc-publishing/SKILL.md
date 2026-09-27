@@ -4,6 +4,7 @@ license: Apache-2.0
 description: >-
   Complete deployment guide for Swift DocC documentation: CLI compilation flags, static hosting transforms,
   base paths, local live preview servers, and automated GitHub Pages workflows.
+  Use when compiling static documentation, deploying to GitHub Pages, previewing locally, or configuring CI/CD.
 metadata:
   author: peterfriese
   version: "1.0.0"
@@ -56,8 +57,9 @@ When generating static documentation for the web, three flags are essential:
 | Flag | Description | When to Use |
 | :--- | :--- | :--- |
 | `--transform-for-static-hosting` | Generates a static HTML/JS/CSS client-side router build ready for standard web servers. | **Mandatory** for hosting on GitHub Pages, Cloudflare Pages, Netlify, or Amazon S3. |
-| `--hosting-base-path <path>` | Sets the base URL path prefix for all routing, scripts, and media requests (e.g., `<repo-name>`). | **Mandatory** when hosting on GitHub Pages under a project repository URL (`https://<user>.github.io/<repo-name>/`). |
+| `--hosting-base-path <path>` | Sets the base URL path prefix for all routing, scripts, and media requests (e.g., `<repo-name>`). | **Mandatory** when hosting on GitHub Pages under a project repository URL (`https://<user>.github.io/<repo-name>/`). Omit for root user/org domains. |
 | `--output-path <path>` | Specifies the output destination folder where HTML, CSS, JavaScript, and JSON data are written. | Always specify an explicit path (e.g., `.build/docc-static` or `docs`). |
+| `--disable-indexing` | Skips client-side search index generation (`index/`). | Optional: use in resource-constrained CI to accelerate builds when search is not needed. |
 
 ---
 
@@ -88,8 +90,9 @@ swift package --allow-writing-to-directory ./docs \
 ```
 
 > [!IMPORTANT]
-> **Base Path Formatting**: Omit leading and trailing slashes in `--hosting-base-path`. For `https://peterfriese.github.io/swift-docc-skills/`, use:
-> `--hosting-base-path swift-docc-skills`
+> **Base Path Formatting**:
+> - **Project Pages** (`https://<user>.github.io/<repo-name>/`): Pass `--hosting-base-path <repo-name>` (omit leading and trailing slashes). For `https://peterfriese.github.io/swift-docc-skills/`, use `--hosting-base-path swift-docc-skills`.
+> - **User or Organization Pages** (`https://<user>.github.io/`): Omit `--hosting-base-path` entirely so all asset paths resolve from the root domain `/`.
 
 ---
 
@@ -191,8 +194,8 @@ jobs:
 
       - name: Verify Myers Diff Highlights
         run: |
-          if [ -d "scripts" ] && [ -f "scripts/audit-docc-highlights.py" ]; then
-            python3 scripts/audit-docc-highlights.py ./docs/data/tutorials
+          if [ -f "scripts/audit-docc-highlights.py" ]; then
+            python3 scripts/audit-docc-highlights.py ./docs/data/tutorials --allow-empty
           fi
 
       - name: Upload GitHub Pages Artifact

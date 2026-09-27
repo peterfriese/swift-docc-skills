@@ -1,13 +1,9 @@
-# Understanding State and Data Flow
-
-Explore how state properties and observations propagate changes across view hierarchies.
-
 @Article(time: 15) {
     @Intro(title: "Understanding State and Data Flow") {
         Discover how data modeling, `@Observable` macros, and environment values form
         a responsive, unidirectional data pipeline in modern SwiftUI.
 
-        @Image(source: "hero-data-flow.png", alt: "A conceptual diagram showing data flowing down through views and actions passing up.")
+        @Image(source: "hero-state-sync.png", alt: "An iPad screen displaying synchronized data across master and detail views.")
     }
 
     @ContentAndMedia {
@@ -19,17 +15,23 @@ Explore how state properties and observations propagate changes across view hier
     }
 
     @Stack {
-        ### Single Source of Truth
+        @ContentAndMedia {
+            ### Single Source of Truth
 
-        Every distinct piece of information in your application should reside in exactly one place.
-        Duplicating state across views introduces synchronization drift.
-    }
+            Every distinct piece of information in your application resides in exactly one place.
+            Duplicating state across views introduces synchronization drift.
 
-    @Stack {
-        ### Unidirectional Data Flow
+            @Image(source: "single-source.png", alt: "A diagram illustrating a central state container supplying data.")
+        }
 
-        Data flows downward from parent views to child views as read-only properties or bindings.
-        User events flow upward as actions, updating the central model.
+        @ContentAndMedia {
+            ### Unidirectional Data Flow
+
+            Data flows downward from parent views to child views as read-only properties or bindings.
+            User events flow upward as actions, updating the central model.
+
+            @Image(source: "unidirectional-flow.png", alt: "A diagram illustrating data flowing downward and events flowing upward.")
+        }
     }
 
     @Assessments {
@@ -53,7 +55,7 @@ Explore how state properties and observations propagate changes across view hier
             }
 
             @Choice(isCorrect: false) {
-                It requires the developer to manually notify each parent view by posting a NotificationCenter message.
+                It requires manually notifying each parent view by posting a NotificationCenter message.
 
                 @Justification(reaction: "Try again.") {
                     Modern observation handles invalidation automatically without manual notification posting.

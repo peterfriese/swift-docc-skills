@@ -28,7 +28,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 
 def strip_comment(line: str) -> str:
-    """Removes trailing single-line Swift comments (// ...) and whitespace."""
+    """Removes trailing Swift comments (// ... or /* ... */) and whitespace."""
+    start_block = line.find("/*")
+    if start_block != -1:
+        end_block = line.find("*/", start_block + 2)
+        if end_block != -1:
+            line = line[:start_block] + line[end_block + 2:]
     idx = line.find("//")
     if idx != -1:
         return line[:idx].strip()
@@ -38,14 +43,14 @@ def strip_comment(line: str) -> str:
 def is_closing_brace(line: str) -> bool:
     """Returns True if the line consists solely of a closing brace or closure terminator."""
     cleaned = strip_comment(line)
-    return cleaned in {"}", "})", "},", "});", ");"}
+    return cleaned in {"}", "})", "},", "});", ");", "};"}
 
 
 def find_contiguous_blocks(lines: List[int]) -> List[List[int]]:
-    """Groups sorted 1-based line numbers into contiguous integer ranges."""
+    """Groups unique sorted 1-based line numbers into contiguous integer ranges."""
     blocks: List[List[int]] = []
     current: List[int] = []
-    for line in sorted(lines):
+    for line in sorted(set(lines)):
         if not current or line == current[-1] + 1:
             current.append(line)
         else:
@@ -54,6 +59,18 @@ def find_contiguous_blocks(lines: List[int]) -> List[List[int]]:
     if current:
         blocks.append(current)
     return blocks
+
+
+def _extract_inline_text(items: List[Dict[str, Any]]) -> str:
+    """Recursively extracts text from DocC inline content items."""
+    parts: List[str] = []
+    for item in items:
+        text = item.get("text", "") or item.get("code", "")
+        if text:
+            parts.append(text)
+        if "inlineContent" in item:
+            parts.append(_extract_inline_text(item["inlineContent"]))
+    return "".join(parts)
 
 
 def get_step_mapping(doc_data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
@@ -68,15 +85,16 @@ def get_step_mapping(doc_data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
                     if code_file:
                         caption_parts = []
                         for p in step.get("content", []):
-                            for item in p.get("inlineContent", []):
-                                text = item.get("text", "") or item.get("code", "")
-                                if text:
-                                    caption_parts.append(text)
-                        mapping[code_file] = {
+                            inline = p.get("inlineContent", [])
+                            if inline:
+                                caption_parts.append(_extract_inline_text(inline))
+                        step_data = {
                             "task_title": task_title,
                             "step_number": idx,
-                            "step_caption": "".join(caption_parts).strip(),
+                            "step_caption": " ".join(caption_parts).strip(),
                         }
+                        mapping[code_file] = step_data
+                        mapping[Path(code_file).name] = step_data
     return mapping
 
 
@@ -84,12 +102,16 @@ def audit_tutorial_highlights(
     tutorials_dir: Path, verbose: bool = False
 ) -> Tuple[int, int, int, List[Dict[str, Any]]]:
     """
-    Audits all tutorial JSON files in the given directory.
+    Audits tutorial JSON file(s) in the given directory or file path.
 
     Returns:
         (total_files, total_code_refs, total_blocks, shifted_cases)
     """
-    json_files = sorted(tutorials_dir.rglob("*.json"))
+    if tutorials_dir.is_file():
+        json_files = [tutorials_dir] if tutorials_dir.suffix == ".json" else []
+    else:
+        json_files = sorted(tutorials_dir.rglob("*.json"))
+
     if not json_files:
         raise FileNotFoundError(f"No JSON files found in {tutorials_dir}")
 
@@ -99,6 +121,8 @@ def audit_tutorial_highlights(
     shifted_cases: List[Dict[str, Any]] = []
 
     for json_path in json_files:
+        if verbose:
+            print(f"Auditing tutorial file: {json_path}")
         try:
             with open(json_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -116,17 +140,22 @@ def audit_tutorial_highlights(
 
             total_code_refs += 1
             content: List[str] = ref_val.get("content", [])
-            hl_line_numbers = sorted(
+            hl_line_numbers = [
                 h.get("line") for h in raw_highlights if h.get("line") is not None
-            )
+            ]
 
             blocks = find_contiguous_blocks(hl_line_numbers)
             total_blocks += len(blocks)
 
-            step_info = step_map.get(ref_id, {})
+            step_info = step_map.get(ref_id) or step_map.get(Path(ref_id).name, {})
             step_num = step_info.get("step_number", "Unknown")
             task_title = step_info.get("task_title", "Unknown")
             step_caption = step_info.get("step_caption", "")
+
+            if verbose:
+                print(
+                    f"  Ref: {ref_id} (Step {step_num}) - {len(blocks)} highlight block(s)"
+                )
 
             for block in blocks:
                 first_line = block[0]
@@ -143,7 +172,9 @@ def audit_tutorial_highlights(
                 first_is_brace = is_closing_brace(first_text)
                 next_is_brace = is_closing_brace(next_line_text)
 
-                if first_is_brace:
+                # Myers diff shift defect occurs when a multi-line inserted block erroneously
+                # starts on the preceding scope's closing brace AND omits the newly inserted closing brace.
+                if len(block) >= 2 and first_is_brace and next_is_brace:
                     shifted_cases.append({
                         "json_file": json_path,
                         "ref_id": ref_id,
@@ -154,8 +185,8 @@ def audit_tutorial_highlights(
                         "block_end": last_line,
                         "erroneous_brace_line": first_line,
                         "erroneous_brace_text": first_text,
-                        "omitted_brace_line": (last_line + 1) if next_is_brace else None,
-                        "omitted_brace_text": next_line_text if next_is_brace else "",
+                        "omitted_brace_line": last_line + 1,
+                        "omitted_brace_text": next_line_text,
                         "content": content,
                     })
 
@@ -205,14 +236,23 @@ def main() -> int:
         action="store_true",
         help="Enable verbose output",
     )
+    parser.add_argument(
+        "--allow-empty",
+        action="store_true",
+        help="Exit cleanly (status 0) if the target path does not exist or contains no tutorials",
+    )
 
     args = parser.parse_args()
     target_path = Path(args.path)
 
     if not target_path.exists():
+        if args.allow_empty:
+            if args.verbose:
+                print(f"Tutorial data path does not exist, skipping: {target_path}")
+            return 0
         print(
             f"Error: Tutorial data path does not exist: {target_path}\n"
-            f"Ensure static DocC documentation is compiled first (e.g., run 'just docc').",
+            f"Ensure static DocC documentation is compiled first (e.g., run 'just docc' or 'swift package generate-documentation').",
             file=sys.stderr,
         )
         return 1
@@ -221,6 +261,13 @@ def main() -> int:
         total_files, total_code_refs, total_blocks, shifted_cases = (
             audit_tutorial_highlights(target_path, verbose=args.verbose)
         )
+    except FileNotFoundError as e:
+        if args.allow_empty:
+            if args.verbose:
+                print(f"{e}, skipping (--allow-empty enabled).")
+            return 0
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
     except Exception as e:
         print(f"Error during audit: {e}", file=sys.stderr)
         return 1

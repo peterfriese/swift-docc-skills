@@ -98,6 +98,9 @@ The diff engine often matches the new closing brace to the previous scope's clos
 The Python script `scripts/audit-docc-highlights.py` inspects static DocC tutorial JSON output, identifies contiguous highlight ranges, and flags any shifted closing braces:
 
 ```bash
+# Compile static DocC documentation (using swift-docc-plugin)
+just docc <TargetName>
+
 # Run the audit against compiled static tutorial data
 just audit
 # or directly:
