@@ -1,19 +1,19 @@
-# Swift DocC Agent Skills Suite
+# Swift DocC Agent Skills
 
-A specialized collection of production-grade agent skills, authoring standards, boilerplate templates, and quality-gate tooling for building Apple-grade documentation and interactive tutorials with **Swift DocC**.
+A collection of agent skills, authoring standards, starter templates, and audit tooling for writing documentation and interactive tutorials with **Swift DocC**.
 
 ---
 
 ## Overview
 
-Writing developer documentation that matches Apple's official documentation requires mastering multiple distinct disciplines:
-1. **API Reference Architecture**: Precision in-source doc comments, documentation catalogs, topic curation, and symbol graphs.
-2. **Interactive Tutorials**: Multi-chapter curriculum structures, synchronized step-by-step code diffs, and knowledge assessment directives.
-3. **Apple Technical Writing Standards**: Down-to-earth pragmatic voice, the 3-Sentence Step Anatomy, prohibited vocabulary, and visual media guidelines.
+Writing clear documentation with Swift DocC involves several key areas:
+1. **API Reference**: In-source doc comments, documentation catalogs, topic curation, and symbol graphs.
+2. **Interactive Tutorials**: Multi-chapter curriculum structures, step-by-step code diffs, and assessment directives.
+3. **Technical Writing Style**: Down-to-earth pragmatic voice, the 3-Sentence Step Anatomy, prohibited vocabulary, and visual media guidelines.
 4. **Publishing & Deployment**: CLI flags for static web hosting, live local development servers, and automated GitHub Pages workflows.
-5. **Deterministic Quality Gates**: Algorithmic auditing to eliminate the Myers diff brace shift defect in compiled tutorial outputs.
+5. **Highlight Auditing**: Detecting and remediating Myers diff brace shift issues in compiled tutorial outputs.
 
-This repository packages these disciplines into 4 modular agent skills, reusable templates, and an automated audit script.
+This repository organizes these practices into 4 agent skills, starter templates, and an audit script.
 
 ---
 
@@ -51,7 +51,7 @@ swift-docc-skills/
 ## The 4 Skills
 
 ### 1. `swift-docc-reference`
-Covers authoritative API reference documentation:
+Covers API reference documentation:
 - **In-source doc comments**: Triple slash syntax (`///`), single-sentence summaries, parameter tags (`- Parameter:`, `- Parameters:`), return value tags (`- Returns:`), error tags (`- Throws:`), and callout blocks (`> Note:`, `> Important:`, `> Warning:`, `> Tip:`, `> Experiment:`).
 - **Documentation Catalogs (`.docc`)**: Folder hierarchy, catalog placement inside target sources, and resource management.
 - **Target Landing Pages**: Module headings with double backticks (`# ``TargetName```), executive overviews, and curated `## Topics`.
@@ -68,13 +68,13 @@ Covers the mechanics of interactive DocC tutorials:
 
 ### 3. `swift-docc-techwriting`
 Encodes the Apple technical writing philosophy and linguistic style:
-- **The Empowering Guide Persona**: Warm, clear, collaborative, humble, and authoritative voice.
+- **The Empowering Guide Persona**: Warm, clear, collaborative, humble, and direct voice.
 - **Anti-Grandiose Principle**: Explaining technical realities plainly; eliminating academic pretensions and marketing jargon.
 - **The 3-Sentence Step Anatomy**:
   $$\text{Imperative Action} \longrightarrow \text{Context / Principle} \longrightarrow \text{Observable Feedback}$$
   *(Maximum 3 sentences per `@Step`)*.
 - **Prohibited Vocabulary Index**: Ban on diminutives (*simply*, *just*, *easily*, *obviously*), marketing superlatives (*blazing-fast*, *revolutionary*, *magical*), and academic buzzwords (*epistemic*, *dichotomy*, *heuristics*).
-- **Hero Image Standard**: Hero slots must exclusively feature running application screenshots or device mockups—never architectural diagrams or flowcharts.
+- **Hero Image Standard**: Hero slots must feature running application screenshots or device mockups—never architectural diagrams or flowcharts.
 - **Visual Safe Margins**: Minimum $\ge 32\text{px}$ safe padding around all text labels to prevent clipping.
 
 ### 4. `swift-docc-publishing`
@@ -94,7 +94,7 @@ DocC computes code transitions between consecutive `@Code` steps using the Myers
 
 The diff engine often matches the new closing brace to the previous scope's closing brace. This causes the highlight to **slide upward by one line**: the preceding closing brace is highlighted erroneously, and the actual new closing brace is left unhighlighted.
 
-### The Quality Gate
+### The Highlight Auditor
 The Python script `scripts/audit-docc-highlights.py` inspects static DocC tutorial JSON output, identifies contiguous highlight ranges, and flags any shifted closing braces:
 
 ```bash
@@ -115,18 +115,18 @@ When a brace shift is detected:
 
 ---
 
-## Boilerplate Templates
+## Starter Templates
 
-Jumpstart new documentation or tutorial projects using ready-to-fill templates in `templates/`:
+Templates to start new documentation or tutorial pages in `templates/`:
 
-- `templates/tutorials/TableOfContents.tutorial`: Complete `@Tutorials` curriculum landing page.
-- `templates/tutorials/StepByStep.tutorial`: Complete `@Tutorial` step-by-step page with sections, steps, and assessments.
-- `templates/tutorials/ConceptualArticle.article`: `@Article` page for architectural deep-dives.
+- `templates/tutorials/TableOfContents.tutorial`: `@Tutorials` curriculum landing page.
+- `templates/tutorials/StepByStep.tutorial`: `@Tutorial` step-by-step page with sections, steps, and assessments.
+- `templates/tutorials/ConceptualArticle.article`: `@Article` page for conceptual topics.
 - `templates/reference/PackageLandingPage.md`: Reference catalog landing page with topic curation.
 
 ---
 
-## Testing & Quality Assurance
+## Testing
 
 Run the test suite via `just`:
 

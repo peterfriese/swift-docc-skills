@@ -2,18 +2,18 @@
 name: swift-docc-reference
 license: Apache-2.0
 description: >-
-  Authoritative guide for authoring Apple-grade Swift DocC API reference documentation,
+  Guide for authoring Swift DocC API reference documentation,
   in-source doc comments, documentation catalogs, topic curation, and symbol graphs.
   Use when writing triple-slash doc comments, designing landing pages, curating Topics sections,
   linking symbols, or resolving DocC reference warnings.
 metadata:
   author: peterfriese
-  version: "1.0.0"
+  version: "0.1.0"
 ---
 
 # Swift DocC API Reference Documentation
 
-This skill covers the syntax, architecture, and standards for producing comprehensive, idiomatic API reference documentation with Swift DocC—from in-source documentation comments to curated `.docc` documentation catalogs, topic hierarchies, and symbol graphs.
+This skill covers the syntax and conventions for writing API reference documentation with Swift DocC—from in-source documentation comments to curated `.docc` documentation catalogs, topic hierarchies, and symbol graphs.
 
 ---
 

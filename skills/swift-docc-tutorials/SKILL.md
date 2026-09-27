@@ -2,13 +2,13 @@
 name: swift-docc-tutorials
 license: Apache-2.0
 description: >-
-  Authoritative guide and syntax specification for authoring interactive DocC tutorials,
+  Guide and syntax reference for authoring interactive DocC tutorials,
   multi-chapter curricula, step-by-step code walkthroughs, and knowledge assessments.
   Use when authoring @Tutorials, @Tutorial, @Article pages, defining @Code steps, or
   preventing Myers diff code highlight shifts.
 metadata:
   author: peterfriese
-  version: "1.0.0"
+  version: "0.1.0"
 ---
 
 # Swift DocC Interactive Tutorials

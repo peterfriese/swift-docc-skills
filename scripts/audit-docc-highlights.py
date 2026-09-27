@@ -2,7 +2,7 @@
 """
 audit-docc-highlights.py
 
-Quality gate script to audit DocC static tutorial output for Myers Diff brace shifts.
+Script to audit DocC static tutorial output for Myers diff brace shifts.
 
 DocC uses the Myers diff algorithm to generate step-by-step code highlights. Because
 Myers diff operates without Swift AST / scope awareness, inserting a new block that ends

@@ -1,6 +1,6 @@
 @Tutorials(name: "AppOrFrameworkName") {
     @Intro(title: "Building AppOrFrameworkName") {
-        Discover how to build a complete, production-grade application using modern
+        Discover how to build an application using modern
         Swift and SwiftUI. In this tutorial series, you'll construct the user interface,
         integrate data storage, and add responsive interactions.
 

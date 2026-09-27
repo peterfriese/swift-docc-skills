@@ -7,7 +7,7 @@ description: >-
   Use when compiling static documentation, deploying to GitHub Pages, previewing locally, or configuring CI/CD.
 metadata:
   author: peterfriese
-  version: "1.0.0"
+  version: "0.1.0"
 ---
 
 # Swift DocC Publishing & Deployment
@@ -108,7 +108,7 @@ swift package dump-symbol-graph
 xcrun docc convert Sources/MyLibrary/MyLibrary.docc \
     --fallback-display-name MyLibrary \
     --fallback-bundle-identifier com.example.MyLibrary \
-    --fallback-bundle-version 1.0.0 \
+    --fallback-bundle-version 0.1.0 \
     --additional-symbol-graph-dir .build/extracted-symbols \
     --transform-for-static-hosting \
     --hosting-base-path my-repo-name \

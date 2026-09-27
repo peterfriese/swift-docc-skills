@@ -8,7 +8,7 @@ description: >-
   or polishing tutorial prose to match Apple standards.
 metadata:
   author: peterfriese
-  version: "1.0.0"
+  version: "0.1.0"
 ---
 
 # Apple Documentation Tech Writing Style Standard
