@@ -1,9 +1,9 @@
 @Article(time: 15) {
-    @Intro(title: "Understanding State and Data Flow") {
+    @Intro(title: "Understanding state and data flow") {
         Discover how data modeling, `@Observable` macros, and environment values form
         a responsive, unidirectional data pipeline in modern SwiftUI.
 
-        @Image(source: "hero-state-sync.png", alt: "An iPad screen displaying synchronized data across master and detail views.")
+        @Image(source: "hero-state-sync.svg", alt: "An iPad screen displaying synchronized data across master and detail views.")
     }
 
     @ContentAndMedia {
@@ -11,26 +11,26 @@
         imperatively mutating controls when underlying data shifts, you bind views to state.
         When state values change, the framework invalidates dependent views and re-renders them.
 
-        @Image(source: "flow-overview.png", alt: "Overview of data flow between model, view, and storage.")
+        @Image(source: "flow-overview.svg", alt: "Overview of data flow between model, view, and storage.")
     }
 
     @Stack {
         @ContentAndMedia {
-            ### Single Source of Truth
+            ### Single source of truth
 
             Every distinct piece of information in your application resides in exactly one place.
             Duplicating state across views introduces synchronization drift.
 
-            @Image(source: "single-source.png", alt: "A diagram illustrating a central state container supplying data.")
+            @Image(source: "single-source.svg", alt: "A diagram illustrating a central state container supplying data.")
         }
 
         @ContentAndMedia {
-            ### Unidirectional Data Flow
+            ### Unidirectional data flow
 
             Data flows downward from parent views to child views as read-only properties or bindings.
             User events flow upward as actions, updating the central model.
 
-            @Image(source: "unidirectional-flow.png", alt: "A diagram illustrating data flowing downward and events flowing upward.")
+            @Image(source: "unidirectional-flow.svg", alt: "A diagram illustrating data flowing downward and events flowing upward.")
         }
     }
 

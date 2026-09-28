@@ -1,19 +1,19 @@
 @Tutorial(time: 20, projectFiles: "AppOrFrameworkName-Starter.zip") {
     @XcodeRequirement(title: "Xcode 16.0+", destination: "https://developer.apple.com/xcode/")
 
-    @Intro(title: "Creating the Detail View") {
+    @Intro(title: "Creating the detail view") {
         Build a polished detail view combining image previews, formatted metadata,
         and action controls.
 
-        @Image(source: "hero-detail-view.png", alt: "The completed detail view displaying item information.")
+        @Image(source: "hero-detail-view.svg", alt: "The completed detail view displaying item information.")
     }
 
-    @Section(title: "Construct the Header Component") {
+    @Section(title: "Construct the header component") {
         @ContentAndMedia {
             The detail view introduces the item with a prominent header image and title badge.
             In this section, you'll create a dedicated view component and style it with SwiftUI modifiers.
 
-            @Image(source: "section-header-preview.png", alt: "A preview of the header view component.")
+            @Image(source: "section-header-preview.svg", alt: "A preview of the header view component.")
         }
 
         @Steps {
