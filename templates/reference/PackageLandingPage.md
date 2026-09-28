@@ -14,11 +14,11 @@ let client = ServiceClient(apiKey: "...")
 let result = try await client.performOperation()
 ```
 
-### Key Features
+### Key features
 
-- **Swift 6 Strict Concurrency**: All core primitives conform to `Sendable` and respect actor isolation.
-- **Zero Third-Party Dependencies**: Built exclusively on native Foundation and standard library APIs.
-- **Progressive Disclosure**: Ergonomic convenience methods for common workflows alongside deep customization hooks.
+- **Swift 6 strict concurrency**: All core primitives conform to `Sendable` and respect actor isolation.
+- **Zero third-party dependencies**: Built exclusively on native Foundation and standard library APIs.
+- **Progressive disclosure**: Ergonomic convenience methods for common workflows alongside deep customization hooks.
 
 ## Topics
 
@@ -28,13 +28,13 @@ let result = try await client.performOperation()
 - ``ServiceClient``
 - ``Configuration``
 
-### Core Workflows
+### Core workflows
 
 - ``Operation``
 - ``ResultHandler``
 - ``BatchProcessor``
 
-### Error Handling
+### Error handling
 
 - ``ServiceError``
 - ``RetryPolicy``

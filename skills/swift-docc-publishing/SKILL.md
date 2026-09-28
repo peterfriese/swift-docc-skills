@@ -10,25 +10,28 @@ metadata:
   version: "0.1.0"
 ---
 
-# Swift DocC Publishing & Deployment
+# Swift DocC publishing and deployment
 
 This skill provides step-by-step instructions, CLI flag references, and CI/CD pipelines for compiling Swift DocC documentation into static websites, previewing them locally, and hosting them on GitHub Pages or static web servers.
 
+# References
+- `references/hosting-and-ci-cd.md`: Consult when configuring CLI compilation flags, setting `--hosting-base-path` for GitHub Pages, previewing static sites locally, configuring GitHub Actions workflows, or troubleshooting 404/SPA routing issues.
+
 ---
 
-## 1. Compilation Methods Overview
+## 1. Compilation methods overview
 
 DocC documentation can be compiled using either the **Swift Package Manager DocC Plugin** (`swift-docc-plugin`) or direct invocations of **`xcrun docc`** / **`docc`**.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                          DOCC COMPILATION PIPELINE                       │
+│                          DocC compilation pipeline                       │
 └────────────────────────────────────┬─────────────────────────────────────┘
                                      │
          ┌───────────────────────────┴───────────────────────────┐
          ▼                                                       ▼
 ┌─────────────────────────────────┐             ┌─────────────────────────────────┐
-│     SWIFT PACKAGE MANAGER       │             │       DIRECT DOCC CLI           │
+│     Swift Package Manager       │             │       Direct DocC CLI           │
 │  swift package                  │             │  xcrun docc convert             │
 │  generate-documentation         │             │  (lower-level, custom pipelines)│
 └────────────────┬────────────────┘             └────────────────┬────────────────┘
@@ -36,21 +39,21 @@ DocC documentation can be compiled using either the **Swift Package Manager DocC
                  └───────────────────────┬───────────────────────┘
                                          ▼
                         ┌─────────────────────────────────┐
-                        │     STATIC HOSTING TRANSFORM    │
+                        │     Static hosting transform    │
                         │  --transform-for-static-hosting │
                         │  --hosting-base-path <repo>     │
                         │  --output-path <dir>            │
                         └────────────────┬────────────────┘
                                          ▼
                         ┌─────────────────────────────────┐
-                        │     DEPLOYMENT TARGETS          │
+                        │     Deployment targets          │
                         │  GitHub Pages, Cloudflare, S3   │
                         └─────────────────────────────────┘
 ```
 
 ---
 
-## 2. Essential CLI Flags Reference
+## 2. Essential CLI flags reference
 
 When generating static documentation for the web, three flags are essential:
 
@@ -65,7 +68,7 @@ When generating static documentation for the web, three flags are essential:
 
 ## 3. Compiling with Swift Package Manager
 
-### Using the Swift-DocC Plugin
+### Using the Swift-DocC plugin
 
 Add the official Swift-DocC plugin to your `Package.swift` dependencies:
 
@@ -75,7 +78,7 @@ dependencies: [
 ]
 ```
 
-### Compiling Static Documentation for GitHub Pages
+### Compiling static documentation for GitHub Pages
 
 Run `swift package generate-documentation` with the static hosting flags:
 
@@ -96,7 +99,7 @@ swift package --allow-writing-to-directory ./docs \
 
 ---
 
-## 4. Compiling with `xcrun docc` Directly
+## 4. Compiling with `xcrun docc` directly
 
 If you prefer compiling directly using Xcode's embedded toolchain:
 
@@ -117,9 +120,9 @@ xcrun docc convert Sources/MyLibrary/MyLibrary.docc \
 
 ---
 
-## 5. Local Live Preview
+## 5. Local live preview
 
-### Option A: Built-in SwiftPM Live Preview Server
+### Option A: Built-in SwiftPM live preview server
 
 The Swift-DocC plugin includes a live development server that automatically rebuilds and refreshes when files change:
 
@@ -129,7 +132,7 @@ swift package --disable-sandbox preview-documentation --target MyLibrary
 
 This starts a local server at `http://localhost:8080/documentation/mylibrary`.
 
-### Option B: Previewing Static Export via Python HTTP Server
+### Option B: Previewing static export via Python HTTP server
 
 To preview the exact static artifact that will be deployed to GitHub Pages:
 
@@ -149,7 +152,7 @@ Open `http://localhost:8000/documentation/mylibrary` or `http://localhost:8000/t
 
 ---
 
-## 6. Automated GitHub Pages CI/CD Workflow
+## 6. Automated GitHub Pages CI/CD workflow
 
 Create `.github/workflows/documentation.yml` in your repository:
 
@@ -217,16 +220,16 @@ jobs:
 
 ---
 
-## 7. Common Deployment Troubleshooting
+## 7. Common deployment troubleshooting
 
-### Issue 1: Blank Screen or 404 on CSS/JS Assets
+### Issue 1: Blank screen or 404 on CSS/JS assets
 - **Cause**: Incorrect `--hosting-base-path`. If your GitHub repository is `username/my-lib`, the site lives at `https://username.github.io/my-lib/`.
 - **Solution**: Pass `--hosting-base-path my-lib` during generation.
 
-### Issue 2: Direct Page Links Return 404 on Static Hosts
+### Issue 2: Direct page links return 404 on static hosts
 - **Cause**: DocC produces a Single Page App (SPA). Navigating directly to `https://site.com/documentation/target/symbol` requires fallback routing to `index.html`.
 - **Solution**: `--transform-for-static-hosting` creates routing fallback index files automatically. Ensure your web server does not rewrite paths or strip HTML extensions.
 
-### Issue 3: Interactive Tutorials Fail to Display Code Highlights
+### Issue 3: Interactive tutorials fail to display code highlights
 - **Cause**: Myers diff brace shift defect in compiled tutorial JSON files.
 - **Solution**: Run `scripts/audit-docc-highlights.py ./docs/data/tutorials` in CI to catch and remediate brace shifts before publishing.
