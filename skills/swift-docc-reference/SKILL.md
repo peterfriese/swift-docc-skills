@@ -3,25 +3,31 @@ name: swift-docc-reference
 license: Apache-2.0
 description: >-
   Guide for authoring Swift DocC API reference documentation,
-  in-source doc comments, documentation catalogs, topic curation, and symbol graphs.
+  in-source doc comments, documentation catalogs, topic curation, symbol graphs,
+  and Xcode agent skills integration.
   Use when writing triple-slash doc comments, designing landing pages, curating Topics sections,
-  linking symbols, or resolving DocC reference warnings.
+  linking symbols, exporting Xcode agent skills, or resolving DocC reference warnings.
 metadata:
   author: peterfriese
   version: "0.1.0"
 ---
 
-# Swift DocC API Reference Documentation
+# Swift DocC API reference documentation
 
-This skill covers the syntax and conventions for writing API reference documentation with Swift DocC—from in-source documentation comments to curated `.docc` documentation catalogs, topic hierarchies, and symbol graphs.
+This skill covers the syntax and conventions for writing API reference documentation with Swift DocC—from in-source documentation comments to curated `.docc` documentation catalogs, topic hierarchies, symbol graphs, and Xcode agent skills integration.
+
+# References
+- `references/doc-comments-standard.md`: Consult when authoring or reviewing in-source triple-slash (`///`) doc comments, writing single-sentence summaries, structuring parameter/return/throws tags, or formatting callout blocks.
+- `references/symbol-curation-and-extensions.md`: Consult when curating target landing pages, defining `## Topics` hierarchies, creating documentation extension files (`Extensions/<Type>.md`), or resolving symbol links and overload disambiguations.
+- `references/article-and-metadata-directives.md`: Consult when configuring `@Metadata` blocks, `@TechnologyRoot`, URL redirection with `@Redirected`, multi-column grid layouts with `@Row` and `@Column`, or language switchers with `@TabNavigator`.
 
 ---
 
-## 1. In-Source Documentation Comments
+## 1. In-source documentation comments
 
 Swift DocC extracts API reference documentation directly from doc comments attached to declarations in your Swift source code.
 
-### Comment Syntax
+### Comment syntax
 
 - **Always prefer triple slashes (`///`)** over block comments (`/** ... */`). Triple slashes blend cleanly with standard Swift source code formatting.
 - Attach the doc comment immediately preceding the declaration with no blank line in between.
@@ -40,7 +46,7 @@ public struct Coordinate: Sendable, Hashable {
 }
 ```
 
-### The Single-Sentence Summary Rule
+### The single-sentence summary rule
 
 The first paragraph of a doc comment serves as the **summary sentence**:
 - It appears in Xcode Quick Help tooltips, code completion popovers, and DocC topic listings.
@@ -48,7 +54,7 @@ The first paragraph of a doc comment serves as the **summary sentence**:
 - Keep it concise (1 sentence, under 120 characters).
 - Separate the summary from the extended discussion with an empty `///` line.
 
-### Documenting Parameters, Returns, and Errors
+### Documenting parameters, returns, and errors
 
 Use standard Markdown list syntax with dedicated parameter tags:
 
@@ -76,7 +82,7 @@ When documenting multiple parameters, you may also use a grouped `- Parameters:`
 ///   - unit: The unit of length for the result.
 ```
 
-### Callout Directives
+### Callout directives
 
 DocC parses GitHub-style blockquote callouts to highlight notes, warnings, and tips:
 
@@ -101,7 +107,7 @@ Supported callout heads: `Note`, `Important`, `Warning`, `Tip`, `Experiment`.
 
 ---
 
-## 2. Documentation Catalogs (`.docc`)
+## 2. Documentation catalogs (`.docc`)
 
 A documentation catalog is a folder with the `.docc` extension placed inside your target's source directory (e.g., `Sources/MyFramework/MyFramework.docc`). It holds:
 - The target landing page (`MyFramework.md`)
@@ -109,7 +115,7 @@ A documentation catalog is a folder with the `.docc` extension placed inside you
 - Documentation extension files (`.md`)
 - Media assets (`Resources/images/`, `Resources/videos/`)
 
-### Catalog Directory Layout
+### Catalog directory layout
 
 ```
 Sources/
@@ -129,7 +135,7 @@ Sources/
 
 ---
 
-## 3. The Target Landing Page
+## 3. The target landing page
 
 The landing page introduces the library or module. The top-level heading must match the module name wrapped in double backticks:
 
@@ -144,11 +150,11 @@ MyFramework provides spatial primitives and spatial indexing structures for mapp
 and route optimization applications. Designed for Swift 6, all public types conform to
 `Sendable` and integrate with modern concurrency.
 
-### Key Capabilities
+### Key capabilities
 
-- **Deterministic Math**: Rigorous Haversine and Vincenty geodesic implementations.
-- **Spatial Indexing**: Quadtree and R-Tree implementations optimized for low-latency queries.
-- **Strict Concurrency**: Fully validated under `-strict-concurrency=complete`.
+- **Deterministic math**: Rigorous Haversine and Vincenty geodesic implementations.
+- **Spatial indexing**: Quadtree and R-Tree implementations optimized for low-latency queries.
+- **Strict concurrency**: Fully validated under `-strict-concurrency=complete`.
 
 ## Topics
 
@@ -158,24 +164,24 @@ and route optimization applications. Designed for Swift 6, all public types conf
 - ``Coordinate``
 - ``DistanceUnit``
 
-### Spatial Queries
+### Spatial queries
 
 - ``SpatialIndex``
 - ``BoundingBox``
 - <doc:ConcurrencyModel>
 
-### Supporting Types
+### Supporting types
 
 - ``NavigationError``
 ```
 
 ---
 
-## 4. Symbol Links & Cross-Referencing
+## 4. Symbol links and cross-referencing
 
 DocC uses double backticks to reference symbols and `<doc:...>` to reference articles and pages.
 
-### Symbol Reference Syntax
+### Symbol reference syntax
 
 | Syntax | Target | Example |
 | :--- | :--- | :--- |
@@ -184,7 +190,7 @@ DocC uses double backticks to reference symbols and `<doc:...>` to reference art
 | ` ``TypeName/method(_:)`` ` | Member method | ` ``Coordinate/distance(to:unit:)`` ` |
 | ` ``Module/TypeName`` ` | Scoped to specific module | ` ``SpatialKit/Coordinate`` ` |
 
-### Disambiguating Overloads
+### Disambiguating overloads
 
 When multiple methods share the same base name, specify the argument labels:
 - ` ``Engine/start()`` `
@@ -201,31 +207,31 @@ When symbols share identical base names and argument labels, DocC provides disam
 | **Parameters & Return** | `-(<types>)-><type>` | ` ``process(_:)-(Data)->Bool`` ` |
 | **Unique Identifier Hash** | `-<hash>` | ` ``update(value:)-4gcpg`` ` |
 
-### Article & Path Links
+### Article and path links
 
 - Link to articles: `<doc:GettingStarted>` or `<doc:ConcurrencyModel>` (DocC resolves articles by filename without catalog subfolder prefixes)
 - Link to external URLs: standard Markdown `[Apple Developer](https://developer.apple.com)`
 
 ---
 
-## 5. Topic Curation & Organization
+## 5. Topic curation and organization
 
 By default, DocC lists all uncurated symbols under auto-generated headings like "Structures", "Classes", and "Protocols". **High-quality documentation replaces auto-generation with intentional curation.**
 
-### Curating Topics on Landing Pages and Symbols
+### Curating topics on landing pages and symbols
 
 Add a `## Topics` section to any landing page, article, or symbol extension:
 
 ```markdown
 ## Topics
 
-### Spatial Computation
+### Spatial computation
 
 - ``Coordinate``
 - ``BoundingBox``
 - ``distance(from:to:)``
 
-### Data Storage
+### Data storage
 
 - ``SpatialIndex``
 - ``SpatialCache``
@@ -235,7 +241,7 @@ When a symbol is placed in a `## Topics` section, DocC removes it from the autom
 
 ---
 
-## 6. Documentation Extension Files
+## 6. Documentation extension files
 
 When in-source comments become too verbose, or when you want to curate child symbols without cluttering Swift source files, use a **Documentation Extension File**.
 
@@ -251,14 +257,14 @@ Supplemental architectural guide for coordinate precision and coordinate systems
 While `Coordinate` represents WGS 84 points by default, you can convert coordinates
 to projected planar coordinate systems using projection adapters.
 
-### Precision Guidelines
+### Precision guidelines
 
 Floating-point precision limits can affect calculation accuracy near the poles.
 Refer to the geodesic accuracy table below when choosing between Haversine and Vincenty algorithms.
 
 ## Topics
 
-### Geodesic Distance
+### Geodesic distance
 
 - ``distance(to:unit:)``
 - ``bearing(to:)``
@@ -268,7 +274,7 @@ The content in this extension file merges directly with the in-source comments a
 
 ---
 
-## 7. Symbol Graphs & Compilation
+## 7. Symbol graphs and compilation
 
 DocC operates on **Symbol Graph JSON files** produced by the Swift compiler:
 1. `swift build` or Xcode builds the target with `-emit-symbol-graph`.
@@ -284,11 +290,39 @@ This dumps the generated symbol graph JSON files into `.build/extracted-symbols/
 
 ---
 
-## 8. Reference Documentation Quality Checklist
+## 8. Documenting the Xcode agent skills ecosystem
 
+Xcode 16 and subsequent releases bundle official coding agent skills authored by Apple engineers. You can inspect or export these built-in agent skills using the Xcode developer tools:
+
+```bash
+# Export Apple's built-in coding agent skills to a local directory
+xcrun agent skills export --output-dir /path/to/exported-skills
+```
+
+### The Apple built-in skills vs. DocC gap
+
+When exported, Xcode provides 10 specialized agent skills:
+- `swiftui-specialist` & `swiftui-whats-new-27`: SwiftUI best practices, view lifecycle, `@Observable`, and modern iOS 26/27 APIs.
+- `app-intents-specialist` & `app-intents-whats-new-27`: App Intents execution models, entities, queries, and assistant integration.
+- `c-bounds-safety` & `adopt-c-bounds-safety`: The `-fbounds-safety` C language extension and buffer hardening.
+- `accessibility`: Auditing and remediation for WCAG and accessibility APIs.
+- `modernize-tests` / `test-modernizer`: Migration from XCTest to Swift Testing.
+- `building-document-based-swiftui-applications`: Modern `Document` protocol architecture.
+- `uikit-app-modernization` & `app-resizability`: Multi-window adaptivity, Stage Manager, and foldable displays.
+
+Crucially, **Xcode exports zero skills for Swift DocC, documentation authoring, or interactive tutorial engineering**. Apple's developer tooling relies on community documentation and developer experience workflows to fill this gap.
+
+The `swift-docc-skills` repository serves as the definitive, authoritative suite that complements Apple's built-in Xcode agent skills, equipping AI coding agents and human engineers with the exact standards Apple uses internally for DocC documentation and *Develop in Swift* interactive tutorials.
+
+---
+
+## 9. Reference documentation quality checklist
+
+- [ ] All headings, topics, and titles are written in **strict sentence case**.
 - [ ] All public APIs have a single-sentence summary followed by detailed context.
 - [ ] Every parameter, return value, and thrown error is explicitly documented.
 - [ ] Code examples within doc comments use triple-backtick ```swift blocks.
 - [ ] All symbol links (` ``SymbolName`` `) resolve without DocC compile-time warnings.
 - [ ] Landing page (`<TargetName>.md`) curates symbols into logical, task-oriented `## Topics`.
 - [ ] No uncurated symbols fall into default, auto-generated category buckets.
+- [ ] Documentation catalogs adhere to the standard `.docc` folder hierarchy.
